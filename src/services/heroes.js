@@ -8,8 +8,8 @@ class HeroesService {
     }
   }
 
-  async listContacts() {
-    const data = await this.repository.contacts.listContacts()
+  async listContacts(query) {
+    const data = await this.repository.contacts.listContacts(query)
     return data
   }
 
@@ -23,8 +23,8 @@ class HeroesService {
     return data
   }
 
-  async updateContact(id, body) {
-    const data = await this.repository.contacts.updateContact(id, body)
+  async updateContact(id, body, image) {
+    const data = await this.repository.contacts.updateContact(id, body, image)
     return data
   }
 
@@ -34,10 +34,10 @@ class HeroesService {
     return data
   }
 
-  // async updateStatusContact(userId, id, body) {
-  //   const data = await this.repository.contacts.updateStatusContact(userId, id, body)
-  //   return data
-  // }
+  async removeImage(id, imageId) {
+    const data = await this.repository.contacts.removeImage(id, imageId)
+    return data
+  }
 }
 
 module.exports = HeroesService

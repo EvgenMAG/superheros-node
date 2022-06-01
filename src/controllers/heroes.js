@@ -1,6 +1,5 @@
 const { HttpCode } = require('../helpers/constants')
-const { HeroesService } = require('../services')
-// const { storage } = require('../helpers/formDataUpload')
+const { HeroesService, saveAvatar } = require('../services')
 const path = require('path')
 const fs = require('fs/promises')
 
@@ -9,8 +8,10 @@ const uploadDir = path.join(__dirname, '../../', 'public')
 const heroesService = new HeroesService()
 
 const listContacts = async (req, res, next) => {
+  console.log(req.query)
   try {
-    const contacts = await heroesService.listContacts()
+    const contacts = await heroesService.listContacts(req.query)
+    console.log(contacts)
     res.status(HttpCode.OK).json({
       status: 'success',
       code: HttpCode.OK,
@@ -22,15 +23,18 @@ const listContacts = async (req, res, next) => {
     next(e)
   }
 }
+
 const getContactById = async (req, res, next) => {
   try {
-    const contact = await heroesService.getContactById(req.params.contactId)
-    if (contact) {
+    const hero = await heroesService.getContactById(req.params.contactId)
+    console.log(hero)
+    if (hero) {
       res.status(HttpCode.OK).json({
         status: 'success',
         code: HttpCode.OK,
         data: {
-          contact,
+          hero
+
         }
 
       })
@@ -70,13 +74,19 @@ const removeContact = async (req, res, next) => {
 }
 
 const addContact = async (req, res, next) => {
-  const listImages = req.files.map(({ originalname, path: tempName }) => {
-    const fileName = path.join(uploadDir, 'heroes', originalname)
-    fs.rename(tempName, fileName)
-    const imagesPaths = path.join('/public/heroes', originalname)
-    return imagesPaths
-  })
+  const listImages = await Promise.all(
+    req.files.map(({ path: tempName }) => {
+      // const fileName = path.join(uploadDir, 'heroes', originalname)
+      // fs.rename(tempName, fileName)
+      // const imagesPaths = path.join('/public/heroes', originalname)
 
+      const avatarUrl = saveAvatar(tempName)
+      // fs.unlink(tempName)
+      return avatarUrl
+      // return imagesPaths
+    })
+  )
+  console.log(listImages)
   try {
     const heroes = []
     const contact = await heroesService.addContact({ ...req.body, images: listImages })
@@ -84,7 +94,7 @@ const addContact = async (req, res, next) => {
     res.status(HttpCode.CREATED).json({
       status: 'success',
       code: HttpCode.CREATED,
-      data: heroes
+      data: { heroes }
     })
   } catch (e) {
     // fs.unlink(tempName)
@@ -92,16 +102,29 @@ const addContact = async (req, res, next) => {
   }
 }
 const updateContact = async (req, res, next) => {
+  const listImages = await Promise.all(
+    req.files.map(({ path: tempName }) => {
+      // const fileName = path.join(uploadDir, 'heroes', originalname)
+      // fs.rename(tempName, fileName)
+      // const imagesPaths = path.join('/public/heroes', originalname)
+
+      const avatarUrl = saveAvatar(tempName)
+      // fs.unlink(tempName)
+      return avatarUrl
+      // return imagesPaths
+    })
+  )
+
   try {
-    console.log(req.body)
-    console.log(req.params.contactId)
-    const contact = await heroesService.updateContact(req.params.contactId, req.body)
+    const heroes = []
+    const contact = await heroesService.updateContact(req.params.contactId, req.body, listImages)
+    heroes.push(contact)
     if (contact) {
       res.status(HttpCode.OK).json({
         status: 'success',
         code: HttpCode.OK,
         data: {
-          contact,
+          heroes,
         }
 
       })
@@ -117,32 +140,30 @@ const updateContact = async (req, res, next) => {
   }
 }
 
-// const updateStatusContact = async (req, res, next) => {
-//   try {
-//     console.log(req.body)
-//     console.log(req.params.contactId)
-//     const userId = req.user.id
-//     const contact = await contactsService.updateStatusContact(userId, req.params.contactId, req.body)
-//     if (contact) {
-//       res.status(HttpCode.OK).json({
-//         status: 'success',
-//         code: HttpCode.OK,
-//         data: {
-//           contact,
-//         }
+const removeImage = async (req, res, next) => {
+  try {
+    const contact = await heroesService.removeImage(req.params.contactId, req.params.imageId)
 
-//       })
-//     } else {
-//       return next({
-//         status: HttpCode.BAD_REQUEST,
-//         message: 'missing field favorite',
-//         data: 'Not Found contact',
-//       })
-//     }
-//   } catch (e) {
-//     next(e)
-//   }
-// }
+    if (contact) {
+      res.status(HttpCode.OK).json({
+        status: 'success',
+        code: HttpCode.OK,
+        data: {
+          contact,
+        }
+
+      })
+    } else {
+      return next({
+        status: HttpCode.BAD_REQUEST,
+        message: 'missing field params',
+        data: 'Not Found contact',
+      })
+    }
+  } catch (e) {
+    next(e)
+  }
+}
 
 module.exports = {
   listContacts,
@@ -150,4 +171,5 @@ module.exports = {
   removeContact,
   addContact,
   updateContact,
+  removeImage,
 }

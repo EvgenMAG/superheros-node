@@ -1,16 +1,27 @@
 
 const mongoose = require('mongoose')
-const { Schema, model } = mongoose
+const { Schema, SchemaTypes, model } = mongoose
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 const imagesShema = new Schema(
   {
     image: {
       type: String,
       required: [true, 'Heroes name is required'],
+    },
+    owner: {
+      type: SchemaTypes.ObjectId,
+      ref: 'heroes',
     }
   })
 
-// const Images = model('images', imagesShema)
+imagesShema.plugin(mongoosePaginate)
+
+const Images = model('images', imagesShema)
+
+const checkIfEmpty = (array) => {
+  return array.length === 0 ? false : true
+}
 
 const heroesSchema = new Schema(
   {
@@ -37,11 +48,17 @@ const heroesSchema = new Schema(
       type: String,
       required: [true, 'Phrase Loan is required'],
     },
-    images: [{ image: String }]
+    images: {
+      type: [{
+        image: String,
+      }],
+      validate: [checkIfEmpty, 'At least one image is required.'],
+    },
   },
   { versionKey: false, timestamps: true }
 )
 
+heroesSchema.plugin(mongoosePaginate)
 const Heroes = model('heroes', heroesSchema)
 
-module.exports = { Heroes }
+module.exports = { Heroes, Images }

@@ -11,8 +11,9 @@ const upload = require('../helpers/formDataUpload')
 router
   .get('/', HeroesControllers.listContacts)
   .get('/:contactId', HeroesControllers.getContactById)
-  .post('/', upload.array('images', 4), HeroesControllers.addContact)
+  .post('/', upload.array('images', 6), HeroesControllers.addContact)
   .delete('/:contactId', HeroesControllers.removeContact)
-  .put('/:contactId', HeroesControllers.updateContact)
+  .put('/:contactId', upload.array('images', 6), HeroesControllers.updateContact)
+  .patch('/:contactId/:imageId', HeroesControllers.removeImage)
 
 module.exports = router
