@@ -74,6 +74,8 @@ const removeContact = async (req, res, next) => {
 }
 
 const addContact = async (req, res, next) => {
+  console.log(req.body)
+  console.log(req.files)
   const listImages = await Promise.all(
     req.files.map(({ path: tempName }) => {
       // const fileName = path.join(uploadDir, 'heroes', originalname)
@@ -87,6 +89,7 @@ const addContact = async (req, res, next) => {
     })
   )
   console.log(listImages)
+  console.log(req.body)
   try {
     const heroes = []
     const contact = await heroesService.addContact({ ...req.body, images: listImages })
