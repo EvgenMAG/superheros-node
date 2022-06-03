@@ -8,10 +8,6 @@ class HeroesRepository {
   }
 
   async listContacts({ page = 1, limit = 5 }) {
-    // const result = await this.model.find()
-
-    // return result
-
     const result = await this.model.paginate({}, {
       page,
       limit,
@@ -22,17 +18,10 @@ class HeroesRepository {
 
   async getContactById(id) {
     const result = await this.model.findOne({ _id: id })
-    // const { docs } = await this.modelImage.paginate({ owner: id }, {})
-
     return result
   }
 
   async addContact(body) {
-    // const newContact = await this.model.create({ ...body, poster: body.images[0] })
-    // console.log(newContact)
-    // const images = await body.images.map((item) => this.modelImage.create({ image: item, owner: newContact }))
-    // console.log(images)
-    // return newContact
     const avatar = []
     body.images.map(item => avatar.push({ image: item }))
 

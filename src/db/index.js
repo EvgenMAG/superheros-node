@@ -6,8 +6,6 @@ dotenv.config()
 
 const uriDb = process.env.URI_DB
 
-
-
 const db = new mongoose.connect(uriDb, {
   useUnifiedTopology: true,
   useNewUrlParser: true,

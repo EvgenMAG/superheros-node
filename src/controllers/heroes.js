@@ -1,9 +1,5 @@
 const { HttpCode } = require('../helpers/constants')
 const { HeroesService, saveAvatar } = require('../services')
-// const path = require('path')
-// const fs = require('fs/promises')
-
-// const uploadDir = path.join(__dirname, '../../', 'public')
 
 const heroesService = new HeroesService()
 
@@ -74,22 +70,13 @@ const removeContact = async (req, res, next) => {
 }
 
 const addContact = async (req, res, next) => {
-  console.log(req.body)
-  console.log(req.files)
   const listImages = await Promise.all(
     req.files.map(({ path: tempName }) => {
-      // const fileName = path.join(uploadDir, 'heroes', originalname)
-      // fs.rename(tempName, fileName)
-      // const imagesPaths = path.join('/public/heroes', originalname)
-
       const avatarUrl = saveAvatar(tempName)
-      // fs.unlink(tempName)
       return avatarUrl
-      // return imagesPaths
     })
   )
-  console.log(listImages)
-  console.log(req.body)
+
   try {
     const heroes = []
     const contact = await heroesService.addContact({ ...req.body, images: listImages })
@@ -100,21 +87,14 @@ const addContact = async (req, res, next) => {
       data: { heroes }
     })
   } catch (e) {
-    // fs.unlink(tempName)
     next(e)
   }
 }
 const updateContact = async (req, res, next) => {
   const listImages = await Promise.all(
     req.files.map(({ path: tempName }) => {
-      // const fileName = path.join(uploadDir, 'heroes', originalname)
-      // fs.rename(tempName, fileName)
-      // const imagesPaths = path.join('/public/heroes', originalname)
-
       const avatarUrl = saveAvatar(tempName)
-      // fs.unlink(tempName)
       return avatarUrl
-      // return imagesPaths
     })
   )
 

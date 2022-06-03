@@ -13,9 +13,7 @@ const uploadCloud = promisify(cloudinary.uploader.upload)
 
 const saveAvatar = async (pathFile) => {
     const { secure_url: avatarUrl } = await uploadCloud(pathFile, {
-        // public_id: oldIdClaudAvatar?.replace('SuperHeroes/', ''),
         folder: 'SuperHeroes',
-        // transformation: { width: 150, height: 250, crop: 'pad' }
     })
     await fs.unlink(pathFile)
     return avatarUrl
