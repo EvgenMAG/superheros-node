@@ -1,9 +1,9 @@
 const { HttpCode } = require('../helpers/constants')
 const { HeroesService, saveAvatar } = require('../services')
-const path = require('path')
-const fs = require('fs/promises')
+// const path = require('path')
+// const fs = require('fs/promises')
 
-const uploadDir = path.join(__dirname, '../../', 'public')
+// const uploadDir = path.join(__dirname, '../../', 'public')
 
 const heroesService = new HeroesService()
 

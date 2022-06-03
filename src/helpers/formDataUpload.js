@@ -1,10 +1,8 @@
 const multer = require('multer')
 const path = require('path')
-// const fs = require('fs')
 const { HttpCode } = require('../helpers/constants')
 
-const tempDir = path.join(__dirname, '../', 'temp')
-const uploadDir = path.join(__dirname, '../', 'public')
+const tempDir = path.join(__dirname, '../', 'temporary')
 
 const tempStorage = multer.diskStorage({
     destination: (req, file, cb) => {
