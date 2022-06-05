@@ -35,7 +35,6 @@ class HeroesRepository {
     const { images } = await this.model.findById(id)
     const updatedListImages = images
     pictures.map(item => updatedListImages.push({ image: item }))
-    console.log(updatedListImages)
     const updatedClient = await this.model.findByIdAndUpdate(
       { _id: id },
       { ...body, images: updatedListImages },

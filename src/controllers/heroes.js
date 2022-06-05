@@ -23,7 +23,6 @@ const listContacts = async (req, res, next) => {
 const getContactById = async (req, res, next) => {
   try {
     const hero = await heroesService.getContactById(req.params.contactId)
-    console.log(hero)
     if (hero) {
       res.status(HttpCode.OK).json({
         status: 'success',
@@ -99,15 +98,15 @@ const updateContact = async (req, res, next) => {
   )
 
   try {
-    const heroes = []
-    const contact = await heroesService.updateContact(req.params.contactId, req.body, listImages)
-    heroes.push(contact)
-    if (contact) {
+    // const heroes = []
+    const hero = await heroesService.updateContact(req.params.contactId, req.body, listImages)
+    // heroes.push(contact)
+    if (hero) {
       res.status(HttpCode.OK).json({
         status: 'success',
         code: HttpCode.OK,
         data: {
-          heroes,
+          hero,
         }
 
       })
